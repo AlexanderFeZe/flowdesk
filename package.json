@@ -1,0 +1,19 @@
+{
+  "name": "flowdesk",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:notifications": "npm run dev --workspace=apps/notifications",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build:api": "npm run build --workspace=apps/api",
+    "build:notifications": "npm run build --workspace=apps/notifications"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

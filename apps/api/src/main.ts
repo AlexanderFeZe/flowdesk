@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,9 @@ async function bootstrap() {
   const prefix = configService.get<string>('API_PREFIX', 'api/v1');
 
   app.setGlobalPrefix(prefix);
+
+  // Bind the unified response envelope exception filter globally
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -36,5 +40,4 @@ async function bootstrap() {
   console.log(`API running on http://localhost:${port}/${prefix}`);
   console.log(`Swagger docs at http://localhost:${port}/docs`);
 }
-
 bootstrap();

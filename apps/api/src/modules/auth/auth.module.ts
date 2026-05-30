@@ -3,10 +3,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { User } from '../users/entities/user.entity';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { RedisBlacklistService } from '../../common/services/redis-blacklist.service';
 
 @Module({
   imports: [
@@ -20,7 +21,6 @@ import { AuthController } from './auth.controller';
         return {
           secret,
           signOptions: {
-            // Assert type to satisfy StringValue signature under strictNullChecks
             expiresIn: expiresIn as any,
           },
         };
@@ -29,7 +29,7 @@ import { AuthController } from './auth.controller';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [PassportModule, JwtModule, AuthService],
+  providers: [AuthService, JwtStrategy, RedisBlacklistService],
+  exports: [PassportModule, JwtModule, AuthService, RedisBlacklistService],
 })
 export class AuthModule {}

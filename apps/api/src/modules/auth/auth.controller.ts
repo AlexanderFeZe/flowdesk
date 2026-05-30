@@ -1,5 +1,6 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiTags } from '@nestjs/swagger';
+import * as express from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -58,18 +59,24 @@ export class AuthController {
   }
 
   /**
-   * Protected session teardown gateway. Since JWT is inherently stateless, 
-   * this acts as a client-side instruction anchor.
+   * Protected session teardown gateway. Extracts the active Bearer token from 
+   * the authorization header to register it within the Redis blacklist layer.
    */
   @ApiBearerAuth()
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Invalidate current terminal session bounds' })
-  @SwaggerResponse({ status: 200, description: 'Session terminated cleanly' })
-  @SwaggerResponse({ status: 401, description: 'Missing or malformed Authorization header' })
-  async logout(): Promise<ApiResponse> {
-    // In stateless JWT architectures, token invalidation occurs on the client terminal by shredding local vaults.
-    // This route acts as a standard compliance anchor for enterprise integrations.
-    return ApiResponse.success(null, 'Session tracking structures successfully decoupled from terminal storage');
+  @ApiOperation({ summary: 'Invalidate current terminal session bounds via token blacklisting' })
+  @SwaggerResponse({ status: 200, description: 'Session terminated cleanly and signature blacklisted' })
+  @SwaggerResponse({ status: 401, description: 'Missing or malformed Authorization header context' })
+  async logout(@Req() request: express.Request): Promise<ApiResponse> {
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Missing or malformed Authorization session header');
+    }
+
+    const token = authHeader.split(' ')[1];
+    await this.authService.logout(token);
+
+    return ApiResponse.success(null, 'Session tracking structures successfully decoupled and blacklisted');
   }
 }

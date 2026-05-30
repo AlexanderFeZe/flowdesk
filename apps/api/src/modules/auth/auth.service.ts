@@ -8,6 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { TenantRole, JwtPayload } from '@flowdesk/shared';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { RedisBlacklistService } from '../../common/services/redis-blacklist.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,29 @@ export class AuthService {
     private readonly dataSource: DataSource,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly blacklistService: RedisBlacklistService,
   ) {}
+
+  /**
+   * Invalidates an active terminal session tracking signature via Redis blacklisting.
+   */
+  async logout(token: string): Promise<void> {
+    try {
+      // Decode the token context without verification bounds to read its remaining lifespan
+      const decoded: any = this.jwtService.decode(token);
+      if (!decoded || !decoded.exp) return;
+
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      const remainingTTL = decoded.exp - currentTimestamp;
+
+      // Persist to blacklist if the token has active runtime lifespan remaining
+      if (remainingTTL > 0) {
+        await this.blacklistService.blacklistToken(token, remainingTTL);
+      }
+    } catch {
+      // Fail silently on malformed tokens to protect internal stack layouts
+    }
+  }
 
   /**
    * Registers a new company tenant alongside its administrative user.

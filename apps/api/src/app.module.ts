@@ -6,6 +6,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
+import { RedisBlacklistService } from './common/services/redis-blacklist.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import jwtConfig from './config/jwt.config';
     AuthModule,
   ],
   providers: [
+    RedisBlacklistService,
     // Register the Guard globally using NestJS dependency token inversion mechanics.
     // This systematically shields all downstream route handlers across all controllers by default.
     {

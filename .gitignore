@@ -13,6 +13,9 @@ dist/
 # Logs
 *.log
 
+# Docs
+docs/
+
 # OS
 .DS_Store
 Thumbs.db

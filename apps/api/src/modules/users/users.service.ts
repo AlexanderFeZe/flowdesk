@@ -50,7 +50,15 @@ export class UsersService {
   async findAll(tenantId: string): Promise<User[]> {
     return await this.userRepo.find({
       where: { tenantId },
-      select: ['id', 'email', 'firstName', 'lastName', 'role', 'isActive', 'createdAt'],
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
       order: { createdAt: 'DESC' },
     });
   }
@@ -61,7 +69,15 @@ export class UsersService {
   async findOne(id: string, tenantId: string): Promise<User> {
     const user = await this.userRepo.findOne({
       where: { id, tenantId },
-      select: ['id', 'email', 'firstName', 'lastName', 'role', 'isActive', 'createdAt'],
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
     });
 
     if (!user) {

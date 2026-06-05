@@ -1,6 +1,7 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Tenant } from '../../tenants/entities/tenant.entity';
+import { ProjectMember } from './project-member.entity';
 
 export enum ProjectStatus {
   ACTIVE = 'active',
@@ -33,4 +34,7 @@ export class Project extends BaseEntity {
   @ManyToOne(() => Tenant, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'tenant_id' })
   tenant: Tenant;
+
+  @OneToMany(() => ProjectMember, (member) => member.project)
+  members: ProjectMember[];
 }

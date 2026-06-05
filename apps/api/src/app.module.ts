@@ -8,6 +8,7 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import { RedisBlacklistService } from './common/services/redis-blacklist.service';
 import { TenantsModule } from './modules/tenants/tenants.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TenantsModule } from './modules/tenants/tenants.module';
     // Mount the modular authentication security subsystem subdomain
     AuthModule,
     TenantsModule,
+    UsersModule,
   ],
   providers: [
     RedisBlacklistService,

@@ -7,6 +7,7 @@ export class ApiResponse<T = any> {
   data?: T;
   message?: string;
   errors?: string[];
+  meta?: any;
 
   constructor(partial: Partial<ApiResponse<T>>) {
     Object.assign(this, partial);
@@ -15,12 +16,13 @@ export class ApiResponse<T = any> {
   /**
    * Helper method to generate successful responses.
    */
-  static success<T>(data: T, message?: string): ApiResponse<T> {
-    return new ApiResponse<T>({
+  static success<T>(data?: T, message?: string, errors?: string[], meta?: any): ApiResponse<T> {
+    return {
       success: true,
       data,
       message,
-    });
+      meta,
+    };
   }
 
   /**

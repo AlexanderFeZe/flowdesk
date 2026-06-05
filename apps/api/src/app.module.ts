@@ -9,6 +9,7 @@ import jwtConfig from './config/jwt.config';
 import { RedisBlacklistService } from './common/services/redis-blacklist.service';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { UsersModule } from './modules/users/users.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UsersModule } from './modules/users/users.module';
     AuthModule,
     TenantsModule,
     UsersModule,
+    ProjectsModule,
   ],
   providers: [
     RedisBlacklistService,

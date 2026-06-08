@@ -12,6 +12,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TasksModule } from './modules/tasks/tasks.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TasksModule } from './modules/tasks/tasks.module';
     UsersModule,
     ProjectsModule,
     TasksModule,
+    TicketsModule,
   ],
   providers: [
     RedisBlacklistService,

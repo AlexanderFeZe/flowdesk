@@ -10,6 +10,8 @@ import { RedisBlacklistService } from './common/services/redis-blacklist.service
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { UsersModule } from './modules/users/users.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -26,11 +28,16 @@ import { ProjectsModule } from './modules/projects/projects.module';
         ...configService.get('database'),
       }),
     }),
+    EventEmitterModule.forRoot({
+      wildcard: true,
+      delimiter: '.',
+    }),
     // Mount the modular authentication security subsystem subdomain
     AuthModule,
     TenantsModule,
     UsersModule,
     ProjectsModule,
+    TasksModule,
   ],
   providers: [
     RedisBlacklistService,
